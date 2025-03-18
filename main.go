@@ -27,8 +27,8 @@ func main() {
 		Handler: router,
 	}
 
-	router.HandleFunc("/auth/google/login", handlers.OAuthGoogleLogin())
-	router.HandleFunc("/auth/google/callback", handlers.OAuthGoogleCallback())
+	router.HandleFunc("/auth/google/login", handlers.OAuthGoogleLogin(cfg))
+	router.HandleFunc("/auth/google/callback", handlers.OAuthGoogleCallback(cfg))
 	router.HandleFunc("/admin", handlers.AdminControl())
 	router.HandleFunc("/profile", handlers.AdminProfile())
 	router.HandleFunc("/tokens", handlers.TokenControl())
