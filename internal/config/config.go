@@ -20,6 +20,7 @@ func MustLoad() *types.Config {
 	clientSecret := os.Getenv("CLIENT_SECRET")
 	redirectUrl := os.Getenv("REDIRECT_URI")
 	port := os.Getenv("PORT")
+	sheetId := os.Getenv("SHEET_ID")
 
 	googleOAuthConfig := &oauth2.Config{
 		ClientID:     clientId,
@@ -36,6 +37,7 @@ func MustLoad() *types.Config {
 	response := types.Config{
 		GoogleAuthCfg: googleOAuthConfig,
 		PORT:          port,
+		SHEET_ID:      sheetId,
 	}
 	return &response
 }
