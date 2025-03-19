@@ -44,6 +44,7 @@ func FetchSheets(sheetId string, accessToken string) (types.SheetResponse, error
 		return types.SheetResponse{}, err
 	}
 
+	log.Println("Sending sheet response")
 	return types.SheetResponse{
 		Range:          sheetData.Range,
 		MajorDimension: sheetData.MajorDimension,

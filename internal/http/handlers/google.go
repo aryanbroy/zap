@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/aryanbroy/zap/internal/types"
 	"github.com/aryanbroy/zap/internal/utils/cookies"
@@ -71,6 +72,20 @@ func FormResponses(cfg *types.Config) http.HandlerFunc {
 			return
 		}
 
-		response.WriteJson(w, http.StatusOK, sheetData)
+		values := sheetData.Values
+
+		headers := values[0]
+
+		var mappedValues []map[string]string
+
+		for _, row := range values[1:] {
+			rowMap := make(map[string]string)
+			for i, val := range row {
+				rowMap[strings.ToLower(headers[i])] = val
+			}
+			mappedValues = append(mappedValues, rowMap)
+		}
+
+		response.WriteJson(w, http.StatusOK, mappedValues)
 	}
 }
