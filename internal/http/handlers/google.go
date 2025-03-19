@@ -42,11 +42,6 @@ func OAuthGoogleCallback(cfg *types.Config) http.HandlerFunc {
 			return
 		}
 
-		// accessToken = token.AccessToken
-
-		// fmt.Println("Expiries in: ", token.ExpiresIn)
-		// fmt.Println("Expiry: ", token.Expiry)
-
 		cookies.ApplyCookie(w, token)
 
 		res := SuccessResponse{
@@ -66,13 +61,13 @@ func FormResponses(cfg *types.Config) http.HandlerFunc {
 		accessToken, err := cookies.GetCookie(r, "accessToken")
 
 		if err != nil {
-			response.WriteJson(w, http.StatusInternalServerError, response.CustomError("Error getting cookie", http.StatusInternalServerError))
+			response.WriteJson(w, http.StatusUnauthorized, response.CustomError("User not authorized", http.StatusUnauthorized))
 			return
 		}
 
 		sheetData, err := google.FetchSheets(sheetId, accessToken)
 		if err != nil {
-			response.WriteJson(w, http.StatusInternalServerError, response.GeneralError(err, http.StatusInternalServerError))
+			response.WriteJson(w, http.StatusUnauthorized, response.GeneralError(err, http.StatusUnauthorized))
 			return
 		}
 

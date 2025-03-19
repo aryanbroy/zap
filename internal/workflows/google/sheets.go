@@ -44,6 +44,9 @@ func FetchSheets(sheetId string, accessToken string) (types.SheetResponse, error
 		return types.SheetResponse{}, err
 	}
 
-	fmt.Println("Sheetdata: ", sheetData)
-	return types.SheetResponse{}, nil
+	return types.SheetResponse{
+		Range:          sheetData.Range,
+		MajorDimension: sheetData.MajorDimension,
+		Values:         sheetData.Values,
+	}, nil
 }

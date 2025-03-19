@@ -2,7 +2,6 @@ package cookies
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -31,8 +30,6 @@ func GetCookie(r *http.Request, cookieName string) (string, error) {
 		}
 		return "", err
 	}
-
-	fmt.Println("Value of cookie: ", cookie.Value)
 
 	return cookie.Value, nil
 }
