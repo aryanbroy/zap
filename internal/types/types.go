@@ -6,6 +6,7 @@ type Config struct {
 	GoogleAuthCfg *oauth2.Config
 	PORT          string
 	SHEET_ID      string
+	GEMINI_API    string
 }
 
 type SheetResponse struct {

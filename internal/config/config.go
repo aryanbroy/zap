@@ -21,6 +21,7 @@ func MustLoad() *types.Config {
 	redirectUrl := os.Getenv("REDIRECT_URI")
 	port := os.Getenv("PORT")
 	sheetId := os.Getenv("SHEET_ID")
+	geminiApi := os.Getenv("GEMINI_API")
 
 	googleOAuthConfig := &oauth2.Config{
 		ClientID:     clientId,
@@ -38,6 +39,7 @@ func MustLoad() *types.Config {
 		GoogleAuthCfg: googleOAuthConfig,
 		PORT:          port,
 		SHEET_ID:      sheetId,
+		GEMINI_API:    geminiApi,
 	}
 	return &response
 }
