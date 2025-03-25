@@ -22,6 +22,7 @@ func MustLoad() *types.Config {
 	port := os.Getenv("PORT")
 	sheetId := os.Getenv("SHEET_ID")
 	geminiApi := os.Getenv("GEMINI_API")
+	authState := os.Getenv("AUTHSTATE")
 
 	googleOAuthConfig := &oauth2.Config{
 		ClientID:     clientId,
@@ -31,6 +32,7 @@ func MustLoad() *types.Config {
 			"https://www.googleapis.com/auth/forms.responses.readonly",
 			"https://www.googleapis.com/auth/spreadsheets",
 			"https://www.googleapis.com/auth/gmail.send",
+			"https://www.googleapis.com/auth/spreadsheets.readonly",
 		},
 		Endpoint: google.Endpoint,
 	}
@@ -40,6 +42,7 @@ func MustLoad() *types.Config {
 		PORT:          port,
 		SHEET_ID:      sheetId,
 		GEMINI_API:    geminiApi,
+		AUTHSTATE:     authState,
 	}
 	return &response
 }

@@ -10,7 +10,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-func GeminiResponse(cfg *types.Config) {
+func GeminiResponse(cfg *types.Config, prompt string) {
 
 	ctx := context.Background()
 	apiKey := cfg.GEMINI_API
@@ -27,7 +27,22 @@ func GeminiResponse(cfg *types.Config) {
 
 	model := client.GenerativeModel("gemini-2.0-flash")
 
-	prompt := "hello there, who are you?"
+	instructions := "i am building a tech startup, i am fetching reviews from early customers. You are a professional who is going to reply them based on their feedbacks. Be professional and dont write too big replies"
+
+	// prompt := "hello there, who are you?"
+
+	instructionRes, err := model.GenerateContent(ctx, genai.Text(instructions))
+	if err != nil {
+		log.Fatalf("Unable to generate response: %v", err)
+	}
+
+	fmt.Println("Gemini instruction response: ", instructionRes)
+
+	if len(instructionRes.Candidates) > 0 && len(instructionRes.Candidates[0].Content.Parts) > 0 {
+		fmt.Println(instructionRes.Candidates[0].Content.Parts[0])
+	} else {
+		fmt.Println("No response (instruction response) from model")
+	}
 
 	resp, err := model.GenerateContent(ctx, genai.Text(prompt))
 	if err != nil {

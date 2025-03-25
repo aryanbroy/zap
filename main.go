@@ -6,7 +6,6 @@ import (
 
 	"github.com/aryanbroy/zap/internal/config"
 	"github.com/aryanbroy/zap/internal/http/handlers"
-	"github.com/aryanbroy/zap/internal/utils/gemini"
 )
 
 // done
@@ -33,8 +32,9 @@ func main() {
 	router.HandleFunc("GET /auth/google/login", handlers.OAuthGoogleLogin(cfg))
 	router.HandleFunc("GET /auth/google/callback", handlers.OAuthGoogleCallback(cfg))
 	router.HandleFunc("GET /api/form-responses", handlers.FormResponses(cfg))
+	router.HandleFunc("GET /api/send-mail", handlers.SendMail())
 
-	gemini.GeminiResponse(cfg)
+	// gemini.GeminiResponse(cfg)
 
 	log.Println("Server started at port", server.Addr)
 	if err := server.ListenAndServe(); err != nil {

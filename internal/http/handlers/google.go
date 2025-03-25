@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"strings"
 
@@ -18,20 +19,16 @@ type SuccessResponse struct {
 	Message    string `json:"message"`
 }
 
-var oauthState = "random-secret"
-
-// var accessToken string
-
 func OAuthGoogleLogin(cfg *types.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		url := cfg.GoogleAuthCfg.AuthCodeURL(oauthState, oauth2.AccessTypeOffline, oauth2.ApprovalForce)
+		url := cfg.GoogleAuthCfg.AuthCodeURL(cfg.AUTHSTATE, oauth2.AccessTypeOffline, oauth2.ApprovalForce)
 		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 	}
 }
 
 func OAuthGoogleCallback(cfg *types.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Query().Get("state") != oauthState {
+		if r.URL.Query().Get("state") != cfg.AUTHSTATE {
 			response.WriteJson(w, http.StatusUnauthorized, response.CustomError("State mismatched", http.StatusUnauthorized))
 			return
 		}
@@ -74,6 +71,11 @@ func FormResponses(cfg *types.Config) http.HandlerFunc {
 
 		values := sheetData.Values
 
+		if len(values) == 0 {
+			response.WriteJson(w, http.StatusLengthRequired, response.CustomError("No data present in sheets", http.StatusLengthRequired))
+			return
+		}
+
 		headers := values[0]
 
 		var mappedValues []map[string]string
@@ -81,11 +83,29 @@ func FormResponses(cfg *types.Config) http.HandlerFunc {
 		for _, row := range values[1:] {
 			rowMap := make(map[string]string)
 			for i, val := range row {
-				rowMap[strings.ToLower(headers[i])] = val
+				rowMap[strings.ReplaceAll(strings.ToLower(headers[i]), " ", "")] = val
 			}
 			mappedValues = append(mappedValues, rowMap)
 		}
 
 		response.WriteJson(w, http.StatusOK, mappedValues)
+	}
+}
+
+func SendMail() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var formResponses []types.UserResponse
+
+		err := json.NewDecoder(r.Body).Decode(&formResponses)
+		if err != nil {
+			status := http.StatusBadRequest
+			response.WriteJson(w, status, response.GeneralError(err, status))
+			return
+		}
+
+		// for _, val := range formResponses {
+		// 	fmt.Println(val.Feedback)
+		// }
+		w.Write([]byte("successfull"))
 	}
 }
