@@ -8,6 +8,7 @@ import (
 
 	"github.com/aryanbroy/zap/internal/types"
 	"github.com/aryanbroy/zap/internal/utils/cookies"
+	"github.com/aryanbroy/zap/internal/utils/gemini"
 	"github.com/aryanbroy/zap/internal/utils/response"
 	"github.com/aryanbroy/zap/internal/workflows/google"
 	"golang.org/x/oauth2"
@@ -92,7 +93,7 @@ func FormResponses(cfg *types.Config) http.HandlerFunc {
 	}
 }
 
-func SendMail() http.HandlerFunc {
+func SendMail(cfg *types.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var formResponses []types.UserResponse
 
@@ -103,9 +104,13 @@ func SendMail() http.HandlerFunc {
 			return
 		}
 
-		// for _, val := range formResponses {
-		// 	fmt.Println(val.Feedback)
-		// }
-		w.Write([]byte("successfull"))
+		reply, err := gemini.GeminiResponse(cfg, formResponses[0].Feedback)
+		if err != nil {
+			status := http.StatusServiceUnavailable
+			response.WriteJson(w, status, response.GeneralError(err, status))
+			return
+		}
+
+		response.WriteJson(w, http.StatusOK, reply)
 	}
 }
