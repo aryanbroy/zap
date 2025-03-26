@@ -32,7 +32,7 @@ func main() {
 	router.HandleFunc("GET /auth/google/login", handlers.OAuthGoogleLogin(cfg))
 	router.HandleFunc("GET /auth/google/callback", handlers.OAuthGoogleCallback(cfg))
 	router.HandleFunc("GET /api/form-responses", handlers.FormResponses(cfg))
-	router.HandleFunc("GET /api/send-mail", handlers.SendMail(cfg))
+	router.HandleFunc("GET /api/send-mail", handlers.MailHandler(cfg))
 
 	// gemini.GeminiResponse(cfg)
 

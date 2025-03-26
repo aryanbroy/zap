@@ -93,7 +93,7 @@ func FormResponses(cfg *types.Config) http.HandlerFunc {
 	}
 }
 
-func SendMail(cfg *types.Config) http.HandlerFunc {
+func MailHandler(cfg *types.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var formResponses []types.UserResponse
 
@@ -107,6 +107,21 @@ func SendMail(cfg *types.Config) http.HandlerFunc {
 		reply, err := gemini.GeminiResponse(cfg, formResponses[0].Feedback)
 		if err != nil {
 			status := http.StatusServiceUnavailable
+			response.WriteJson(w, status, response.GeneralError(err, status))
+			return
+		}
+
+		accessToken, err := cookies.GetCookie(r, "accessToken")
+
+		if err != nil {
+			status := http.StatusInternalServerError
+			response.WriteJson(w, status, response.GeneralError(err, status))
+			return
+		}
+
+		err = google.SendMail(accessToken)
+		if err != nil {
+			status := http.StatusInternalServerError
 			response.WriteJson(w, status, response.GeneralError(err, status))
 			return
 		}
