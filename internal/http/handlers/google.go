@@ -119,7 +119,7 @@ func MailHandler(cfg *types.Config) http.HandlerFunc {
 			return
 		}
 
-		err = google.SendMail(accessToken)
+		err = google.SendMail(accessToken, reply)
 		if err != nil {
 			status := http.StatusInternalServerError
 			response.WriteJson(w, status, response.GeneralError(err, status))

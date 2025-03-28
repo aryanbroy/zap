@@ -9,18 +9,19 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/aryanbroy/zap/internal/utils/gemini"
 	"google.golang.org/api/gmail/v1"
 )
 
-func SendMail(token string) error {
+func SendMail(token string, response gemini.ApiResponse) error {
 	log.Println("Sending mail...")
 	url := "https://gmail.googleapis.com/gmail/v1/users/me/messages/send"
 
 	data := makeBody(
 		"aryanbroy003@gmail.com",
 		"aryanbroy003@gmail.com",
-		"Test message",
-		"Testing a message here",
+		"Feedback response",
+		response.Message,
 	)
 
 	payload := map[string]string{"raw": data.Raw}
